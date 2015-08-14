@@ -1,0 +1,93 @@
+---
+title: "Means, Medians, and Deviations..."
+output: html_document
+runtime: shiny
+---
+
+
+The data presented here are data on blue whale behaviour.  This dataset includes observations on 822 dives performed by 33 individual blue whales tagged with animal-borne data-loggers called  [DTAGs](http://soundtags.st-andrews.ac.uk/dtags/) during an experiment called the [Southern Californial Behavioural Response Study](http://sea-inc.net/socal-brs/). NOTE: 820 are real data; 2 fake observational units have been added for educational purposes (they are large outliers in Depth and Distance Traveled, and otherwise comparable to the rest of the data set).
+
+The variables include:
+
+1. **Breaths per Minute** The number of breaths the whale took per minute, calculated as an average over the period of one dive.
+2. **Turning Angle** The change difference, in degrees, in the whale's direction of travel from one dive to the next.
+3. **Dive Depth** Maximum depth (in meters) attained by the whale during the current dive.
+4. **Dive Duration** Duration (in minutes) of the current dive.
+5. **Activity Level** A relative measure of "how much the whale is moving", or (roughly) how much energy it is using.  Technically, this is the minimum specific acceleration in meters per second per second, as measured by accelerometers in the DTAG.
+6. **Distance Traveled** Distance (in meters) traveled between the start and end of the current dive.
+
+Use the interactive figure to get a feel for how numerical summaries relate to distribution plots.  There are some questions below to help guide your explorations. In your answers, you may want to use vocabulary such as *unimodal*, *bimodal*, *symmetric*, *skewed*, *uniform*, and *outlier* to express your ideas.
+
+1. When is the mean an accurate measure of the "center" of a distribution? When is it misleading (for example, does not match "the big bump" in the distribution)?  What about the median?
+2. Statisticians say that the median is "resistant" to outliers, but the mean and standard deviation are not.  Explain what you think they mean.
+3. What features of a distribution (unimodal/bimodal/uniform; skew/symmetric; outliers) can you "see" from a boxplot?  How can you tell?
+4. Find a variable whose distribution is skewed.  Explore how skewness is related to the relative values of the mean and median. For example, is there a consistent pattern of mean larger than median (or median larger than mean) depending on whether the skew is right or left?
+
+```{r, echo=FALSE, message=FALSE}
+require(mosaic)
+trellis.par.set(theme=col.mosaic(bw=TRUE))
+dat <- read.csv("bw.csv", header=T, check.names=F, strip.white=F)
+
+inputPanel(
+
+  selectInput("vari", label = "Variable:",
+              choices = names(dat), 
+              selected = "Dive Depth"),
+  
+  checkboxGroupInput("stats", label="Summary Statistics",
+                     choices=c("Mean", "Median", 
+                               "Standard Deviation",
+                               "Inter-Quartile Range"), 
+                     selected = "Mean", inline = FALSE)
+)
+
+renderPlot({
+  infos <- NULL
+   if ("Mean" %in% input$stats){
+     mn <- round(mean(dat[,input$vari]), digits=1)
+     m <- as.character(mn)
+     infos <- c(infos, "Mean: ", m)
+   }
+  
+   if ("Median" %in% input$stats){
+     dn <- round(median(dat[,input$vari]), digits=1)
+     d <- as.character(dn)
+     infos <- c(infos, "Median: ", d)
+   }
+   if ("Standard Deviation" %in% input$stats){
+     sn <-round(sd(dat[,input$vari]), digits=1)
+     s <- as.character(sn)
+     infos <- c(infos, "s: ", s)
+   }
+   if ("Inter-Quartile Range" %in% input$stats){
+     IN <- round(IQR(dat[,input$vari]), digits=1)
+     I <- as.numeric(IN)
+     infos <- c(infos, "IQR: ", IN)
+   }
+  
+  
+    
+   densityplot( ~  dat[,input$vari], data=dat, 
+               xlab=list(label=input$vari, cex=2),
+             ylab=list(label="Density", cex=2),
+             scales=list(cex=2), n=200, 
+             main=list(label=infos, cex=2))
+#   yspot <- 0.001
+#   trellis.focus("panel", 1,1)
+#   panel.abline(v=m)
+#   panel.text(x=m, y=yspot, label="Mean")
+#   trellis.unfocus()
+   
+  })
+
+renderPlot({
+     bwplot(~  dat[,input$vari], data=dat, 
+               xlab=list(label=input$vari, cex=2),
+             scales=list(cex=2),  
+             horizontal=TRUE) 
+})
+
+```
+
+
+
