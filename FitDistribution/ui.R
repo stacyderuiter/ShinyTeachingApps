@@ -1,4 +1,7 @@
 library(shiny)
+require(markdown)
+require(httpuv)
+require(Rcpp)
 dat <- read.csv('zc_dive_data.csv', header=T, check.names=F, strip.white=F)
 
 # Define UI for application that draws a histogram
