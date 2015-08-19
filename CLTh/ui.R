@@ -1,4 +1,5 @@
 require(shiny)
+require(markdown)
 shinyUI(navbarPage(strong('Sampling Distribution of the Sample Mean'),
                    tabPanel('Plots',
                             sidebarLayout(

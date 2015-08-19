@@ -82,9 +82,9 @@ shinyServer(function(input, output) {
     plot(x=expectedDens()$tq, y=sort(manyXBars()$result), type='p', pch=15, col=colrs[2],
          xlab=paste('Theoretical Quantiles\n from ', expectedDens()$name, ' Distribution'),
          ylab= 'Sampling Distribution Quantiles', 
-         xlim=axl, ylim=axl, main='QQ Plot' )
+         xlim=axl, ylim=axl, main='Normal QQ Plot' )
     abline(a=0, b=1, lty=2, col='grey64', lwd=3.5)
-    legend('topleft', legend=c('Observed Data', 'Expected Pattern'),
+    legend('topleft', legend=c('Observed Data', 'Expected Pattern (if normal dist. fits)'),
            col=c(colrs[2], 'grey64') , pch=c(15,NA), bty='n',
            lty=c(NA,2), lwd=2.5)
     
